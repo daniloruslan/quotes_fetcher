@@ -30,9 +30,9 @@ pip install quotes_fetcher
 Ipynb notebook can be found [HERE](notebooks/demo.ipynb)
 
 ### CLI
-If you're loking for a ready CLI application, there is one. It also supports an option to export data to a file. Please find the app [HERE](CLI/quotes_fetcher.py)
+If you're loking for a ready CLI application, there is one. It supports an option to export data to a file. Please find the app [HERE](CLI/quotes_fetcher.py)
 
-### Todos
+### Plans
 
  - [ ] Fix bugs
  - [ ] Increase test coverage
