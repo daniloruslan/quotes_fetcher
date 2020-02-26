@@ -20,10 +20,11 @@ Average Daily Dollar Trade Volume, Beta-coefficient
 
 from typing import Optional, Dict, Union, List, Any
 import re
+from pandas import DataFrame, Series
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from pandas import DataFrame, Series
+
 
 pd.set_option('display.float_format', '{:,.2f}'.format)
 
@@ -115,6 +116,8 @@ class Symbols:
             beta_values.append(sm_cov / market_var)
         return pd.DataFrame({'Beta': beta_values}, index=self.symbols)
 
+
+
     @property
     def __avg_day_dollar_trd_volume(self) -> DataFrame:
         """
@@ -128,11 +131,20 @@ class Symbols:
 
         :rtype: DataFrame
         """
+
+        def ddtv(row: Series) -> float:
+            """
+            Receives a Pandas Series containing Open, High, Low, Close, Volume values and returns
+            Daily Dollar Trading Value.
+
+            :rtype: float
+            """
+
+            return (row['Close'] + row['High'] + row['Low'] + row['Open']) / 4 * row['Volume']
+
         addtv: list = []
         for symbol in self.symbols:
-            avg_quotes: Series = self.quotes[symbol].mean()
-            addtv_tmp: float = (avg_quotes['Open'] + avg_quotes['High'] +
-                                avg_quotes['Low'] + avg_quotes['Close']) / 4 * avg_quotes['Volume']
+            addtv_tmp = self.quotes[symbol].apply(ddtv, axis=1).mean()
             addtv.append(addtv_tmp)
         return pd.DataFrame({'Avg Day Dollar Trd Vol': addtv}, index=self.symbols)
 
