@@ -2,13 +2,13 @@ from distutils.core import setup
 setup(
   name = 'quotes_fetcher',
   packages = ['quotes_fetcher'],
-  version = '0.3',
+  version = '0.4',
   license='MIT',
   description = 'quote_fetcher is a toy app that provides you with an option to fetch exchange market data and calculate some metrics ',
   author = 'Ruslan Danila',
   author_email = 'daniloruslan@yahoo.com',
   url = 'https://github.com/user/daniloruslan',
-  download_url = 'https://github.com/daniloruslan/quotes_fetcher/archive/v0.3.tar.gz',
+  download_url = 'https://github.com/daniloruslan/quotes_fetcher/archive/v0.4.tar.gz',
   keywords = ['exchange', 'data', 'quotes'],
   install_requires=[
           'yfinance',
