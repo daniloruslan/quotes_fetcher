@@ -4,15 +4,16 @@ This library will allow you to perform the following actions:
 Available data points: Open, High, Low, Close,Volume
 
 - Time interval can be set in two ways:
--- period like 1d, 5d, 1mo, 3mo, 1y, 2y, 5y, 10y, ytd, etc. 1mo is used by default.
+-- period like 1d, 5d, 1mo, 3mo, 1y, 2y, 5y, 10y, ytd, etc.
+1mo is used by default.
 -- period specified by start and end dates in format "YYYY-MM-DD".
 The second option has a higher priority if specified.
 
 - Get the fetched data as a Pandas Dataframe. Two view modes are available:
 -- Regular (index consists of dates and columns are represented as two levels -
 symbols and data points). Used by default.
--- Transposed (columns are represented as dates and index consists of two levels -
-symbol and data points).
+-- Transposed (columns are represented as dates and index
+consists of two levels -symbol and data points).
 
 - Calculate the following date points: Average Close Price, Average Volume,
 Average Daily Dollar Trade Volume, Beta-coefficient
@@ -24,7 +25,6 @@ from pandas import DataFrame, Series
 import yfinance as yf
 import pandas as pd
 import numpy as np
-
 
 pd.set_option('display.float_format', '{:,.2f}'.format)
 
@@ -83,11 +83,13 @@ class Symbols:
     @property
     def quotes_t(self) -> DataFrame:
         """
-        Returns fetched data as a transposed Pandas Dataframe. As result, columns consist of dates
-        and the index has two levels: symbols and data points. The data is groupped by symbols.
+        Returns fetched data as a transposed Pandas Dataframe. As result,
+        columns consist of dates and the index has two levels: symbols and
+        data points. The data is groupped by symbols.
 
         :rtype: DataFrame
         """
+
         data: DataFrame = self.__data.copy()
         if len(self.symbols) == 1:
             return data.T
@@ -95,17 +97,19 @@ class Symbols:
 
     def __beta(self, market: str = 'SPY') -> DataFrame:
         """
-        Receives a symbols against which Beta coefficient should be calculated for all symbols
-        in the class instance. SPY is used by default.
+        Receives a symbols against which Beta coefficient should be calculated
+        for all symbols in the class instance. SPY is used by default.
 
         Beta is calculated as follows:
         Beta= Covariance(s, m) / Variance(m), where:
-        - Covariance(s, m) = Measure of a stock’s return relative to that of the market
+        - Covariance(s, m) = Measure of a stock’s return relative
+        to that of the market
         - Variance(m) = Measure of how the market moves relative to its mean
 
         :type market: str
         :rtype: DataFrame
         """
+
         market_close: Series = yf.Ticker(market).history(**self.__period)['Close']
         market_return: Series = market_close.pct_change()[1:]
         beta_values: list = []
@@ -116,26 +120,26 @@ class Symbols:
             beta_values.append(sm_cov / market_var)
         return pd.DataFrame({'Beta': beta_values}, index=self.symbols)
 
-
-
     @property
     def __avg_day_dollar_trd_volume(self) -> DataFrame:
         """
-        Calculates Average Daily Dollar Trading Volume value for each symbols in the class instance
-        within the period specified. Calculated as the product of the daily trading volume of the
-        Common Stock as reported by Bloomberg on such Trading Day and the Weighted Average Price of
-        the Common Stock on such Trading Day.
+        Calculates Average Daily Dollar Trading Volume value for each
+        symbols in the class instance within the period specified.
+        Calculated as the product of the daily trading volume of the Common
+        Stock as reported by Bloomberg on such Trading Day and the Weighted
+        Average Price of the Common Stock on such Trading Day.
 
-        NOTE: since weighted average price cannot be calculated based on the data available,
-        the average price is calculated as (open + high + low + close) / 4.
+        NOTE: since weighted average price cannot be calculated based on the
+        data available, the average price is calculated as follows:
+        (open + high + low + close) / 4.
 
         :rtype: DataFrame
         """
 
-        def ddtv(row: Series) -> float:
+        def day_doll_trd_vol(row: Series) -> float:
             """
-            Receives a Pandas Series containing Open, High, Low, Close, Volume values and returns
-            Daily Dollar Trading Value.
+            Receives a Pandas Series containing Open, High, Low, Close, Volume
+            values and returns Daily Dollar Trading Value.
 
             :rtype: float
             """
@@ -144,7 +148,7 @@ class Symbols:
 
         addtv: list = []
         for symbol in self.symbols:
-            addtv_tmp = self.quotes[symbol].apply(ddtv, axis=1).mean()
+            addtv_tmp = self.quotes[symbol].apply(day_doll_trd_vol, axis=1).mean()
             addtv.append(addtv_tmp)
         return pd.DataFrame({'Avg Day Dollar Trd Vol': addtv}, index=self.symbols)
 
@@ -160,6 +164,7 @@ class Symbols:
 
         :rtype: DataFrame
         """
+
         metrics: DataFrame = pd.DataFrame(self.__data.T.loc['Close'].mean(axis=1),
                                           columns=['Average Close'])
         volume: DataFrame = pd.DataFrame(self.__data.T.loc['Volume'].mean(axis=1),
