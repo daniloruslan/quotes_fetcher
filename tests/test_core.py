@@ -67,7 +67,7 @@ def test_metric_avg_dollar_vol():
     symbols = 'KO TSLA AAPL'
     period = {'period_start': '2018-12-15',
               'period_end': '2019-01-08'}
-    assert Symbols(symbols, **period).metrics.loc['TSLA']['Avg Day Dollar Trd Vol'] == 2576235438.0291405
+    assert Symbols(symbols, **period).metrics.loc['TSLA']['Avg Day Dollar Trd Vol'] == 2569302854.552053
 
 def test_metric_beta():
     symbols = 'KO TSLA AAPL'
